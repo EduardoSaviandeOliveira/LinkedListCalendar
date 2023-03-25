@@ -12,40 +12,16 @@ CommitmentList *CreateCommitmentList() {
     return list;
 }
 
-void InsertCommitmentNode(CommitmentList *list, std::string startTime, std::string endTime, std::string description) {
-    CommitmentNode* node = new CommitmentNode;
-    node->starttime = startTime;
-    node->endtime = endTime;
-    node->description = description;
-    node->next = nullptr;
-    node->prev = nullptr;
 
-    if (list->head == nullptr) {
-        list->head = node;
-        list->tail = node;
-    } else {
-        CommitmentNode* temp = list->head;
-        while (temp != nullptr) {
-            if (temp->starttime > startTime) {
-                if (temp->prev != nullptr) {
-                    temp->prev->next = node;
-                    node->prev = temp->prev;
-                } else {
-                    list->head = node;
-                }
-                temp->prev = node;
-                node->next = temp;
-                break;
-            }
-            temp = temp->next;
-        }
-        if (temp == nullptr) {
-            list->tail->next = node;
-            node->prev = list->tail;
-            list->tail = node;
-        }
-    }
+void InsertCommitment(std::string date, CaledarList  *calendar, std::string startTime, std::string endTime, std::string description) {
 }
 
+void PrintCommitments(CommitmentList *list) {
+    CommitmentNode* node = list->head;
+    while (node != nullptr) {
+        std::cout << node->starttime << " " << node->endtime << " " << node->description << std::endl;
+        node = node->next;
+    }
+}
 
 #endif

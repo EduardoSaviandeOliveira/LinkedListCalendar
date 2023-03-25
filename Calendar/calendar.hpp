@@ -16,12 +16,14 @@ struct CaledarList {
     CalendarNode *tail;
 };
 
-CaledarList *CreateCaledarList();
+CaledarList *CreateCaledar();
 
-void InsertCaledarNode(CaledarList *list, std::string date);
+void InsertDate(CaledarList *calendar, std::string date);
 
-void RemoveCaledarNode(CaledarList *list, std::string date);
+void RemoveDate(CaledarList *calendar, std::string date);
 
-void PrintCalendar(CaledarList *list);
+CalendarNode *GetDate(CaledarList *calendar, std::string date);
+
+void PrintCalendar(CaledarList *calendar);
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "calendar.hpp"
 
-CaledarList *CreateCaledarList() {
+CaledarList *CreateCaledar() {
     CaledarList *list = new CaledarList;
 
     list->head = nullptr;
@@ -13,24 +13,24 @@ CaledarList *CreateCaledarList() {
 }
 
 //insert in order
-void InsertCaledarNode(CaledarList *list, std::string date) {
+void InsertDate(CaledarList *calendar, std::string date) {
     CalendarNode* node = new CalendarNode;
     node->date = date;
     node->next = nullptr;
     node->prev = nullptr;
 
-    if (list->head == nullptr) {
-        list->head = node;
-        list->tail = node;
+    if (calendar->head == nullptr) {
+        calendar->head = node;
+        calendar->tail = node;
     } else {
-        CalendarNode* temp = list->head;
+        CalendarNode* temp = calendar->head;
         while (temp != nullptr) {
             if (temp->date > date) {
                 if (temp->prev != nullptr) {
                     temp->prev->next = node;
                     node->prev = temp->prev;
                 } else {
-                    list->head = node;
+                    calendar->head = node;
                 }
                 temp->prev = node;
                 node->next = temp;
@@ -39,27 +39,27 @@ void InsertCaledarNode(CaledarList *list, std::string date) {
             temp = temp->next;
         }
         if (temp == nullptr) {
-            list->tail->next = node;
-            node->prev = list->tail;
-            list->tail = node;
+            calendar->tail->next = node;
+            node->prev = calendar->tail;
+            calendar->tail = node;
         }
     }
 }
 
 // Remove a date in the calendar
-void RemoveCaledarNode(CaledarList *list, std::string date) {
-    CalendarNode* node = list->head;
+void RemoveDate(CaledarList *calendar, std::string date) {
+    CalendarNode* node = calendar->head;
     while (node != nullptr) {
         if (node->date == date) {
             if (node->prev != nullptr) {
                 node->prev->next = node->next;
             } else {
-                list->head = node->next;
+                calendar->head = node->next;
             }
             if (node->next != nullptr) {
                 node->next->prev = node->prev;
             } else {
-                list->tail = node->prev;
+                calendar->tail = node->prev;
             }
             delete node;
             break;
@@ -68,8 +68,19 @@ void RemoveCaledarNode(CaledarList *list, std::string date) {
     }
 }
 
-void PrintCalendar(CaledarList *list) {
-    CalendarNode* node = list->head;
+CalendarNode *GetDate(CaledarList *calendar, std::string date) {
+    CalendarNode* node = calendar->head;
+    while (node != nullptr) {
+        if (node->date == date) {
+            return node;
+        }
+        node = node->next;
+    }
+    return nullptr;
+}
+
+void PrintCalendar(CaledarList *calendar) {
+    CalendarNode* node = calendar->head;
     while (node != nullptr) {
         std::cout << node->date << "\n";
         node = node->next;

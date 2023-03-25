@@ -4,11 +4,11 @@
 using namespace std;
 
 int main() {
-    CaledarList *caledarlist = CreateCaledarList();
-    InsertCaledarNode(caledarlist, "2020-01-01");
+    CaledarList *caledar = CreateCaledar();
+    InsertDate(caledar, "2020-01-01");
+    InsertDate(caledar, "2021-01-01");
 
-    
-    PrintCalendar(caledarlist);
+    PrintCalendar(caledar);
 
     return 0;
 }

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include "../Calendar/calendar.hpp"
+
 struct CommitmentNode {
     std::string starttime;
     std::string endtime;
@@ -19,6 +21,8 @@ struct CommitmentList {
 
 CommitmentList *CreateCommitmentList();
 
-void InsertCommitmentNode(CommitmentList *list, std::string startTime, std::string endTime, std::string description);
+void InsertCommitment(std::string date, CaledarList  *calendar, std::string startTime, std::string endTime, std::string description);
+
+void PrintCommitments(CommitmentList *node);
 
 #endif
