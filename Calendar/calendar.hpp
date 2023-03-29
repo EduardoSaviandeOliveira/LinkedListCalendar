@@ -2,10 +2,11 @@
 #define CALENDAR_HPP
 
 #include <string>
+
 #include "../Commitment/commitment.hpp"
 
 struct CalendarNode {
-    CommitmentList *commitmentlist = CreateCommitmentList();
+    CommitmentList *commitmentList = CreateCommitmentList();
     std::string date;
     CalendarNode* next;
     CalendarNode* prev;
@@ -15,6 +16,8 @@ struct CaledarList {
     CalendarNode *head;
     CalendarNode *tail;
 };
+
+bool validateTime(const std::string& timeStr);
 
 CaledarList *CreateCaledar();
 

@@ -13,13 +13,12 @@ CommitmentList *CreateCommitmentList() {
 }
 
 
-void InsertCommitment(std::string date, CaledarList  *calendar, std::string startTime, std::string endTime, std::string description) {
-}
+
 
 void PrintCommitments(CommitmentList *list) {
     CommitmentNode* node = list->head;
     while (node != nullptr) {
-        std::cout << node->starttime << " " << node->endtime << " " << node->description << std::endl;
+        std::cout << node->startTime << " " << node->endtime << " " << node->description << std::endl;
         node = node->next;
     }
 }

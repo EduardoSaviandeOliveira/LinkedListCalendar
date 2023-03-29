@@ -1,8 +1,6 @@
 #include "Calendar/calendar.hpp"
 #include "Commitment/commitment.hpp"
 
-using namespace std;
-
 int main() {
     CaledarList *caledar = CreateCaledar();
     InsertDate(caledar, "2020-01-01");
