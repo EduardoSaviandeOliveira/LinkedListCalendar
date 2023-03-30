@@ -12,21 +12,28 @@ struct CalendarNode {
     CalendarNode* prev;
 };
 
-struct CaledarList {
+struct CalendarList {
     CalendarNode *head;
     CalendarNode *tail;
 };
+bool IsValidDate(std::string date);
 
-bool validateTime(const std::string& timeStr);
+bool IsValidTime(std::string time);
 
-CaledarList *CreateCaledar();
+bool IsOccupiedTime(CalendarList *calendar, std::string date, std::string startTime, std::string endTime);
 
-void InsertDate(CaledarList *calendar, std::string date);
+bool IsOccupiedDate(CalendarList *calendar, std::string date);
 
-void RemoveDate(CaledarList *calendar, std::string date);
+void InsertCommitment(std::string date, CalendarList  *calendar, std::string startTime, std::string endTime, std::string description);
 
-CalendarNode *GetDate(CaledarList *calendar, std::string date);
+CalendarList *CreateCaledar();
 
-void PrintCalendar(CaledarList *calendar);
+void InsertDate(CalendarList *calendar, std::string date);
+
+void RemoveDate(CalendarList *calendar, std::string date);
+
+CalendarNode *GetDate(CalendarList *calendar, std::string date);
+
+void PrintCommitments(CalendarList *calendar, std::string date);
 
 #endif

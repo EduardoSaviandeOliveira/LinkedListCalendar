@@ -19,6 +19,5 @@ struct CommitmentList {
 
 CommitmentList *CreateCommitmentList();
 
-void PrintCommitments(CommitmentList *node);
 
 #endif

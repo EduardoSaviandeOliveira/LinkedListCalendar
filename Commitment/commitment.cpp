@@ -14,13 +14,4 @@ CommitmentList *CreateCommitmentList() {
 
 
 
-
-void PrintCommitments(CommitmentList *list) {
-    CommitmentNode* node = list->head;
-    while (node != nullptr) {
-        std::cout << node->startTime << " " << node->endtime << " " << node->description << std::endl;
-        node = node->next;
-    }
-}
-
 #endif
