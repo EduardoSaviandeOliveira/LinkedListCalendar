@@ -8,9 +8,9 @@ int main() {
     InsertCommitment("2020-01-01", caledar, "12:00", "13:00", "test");
     InsertCommitment("2020-01-01", caledar, "13:00", "14:00", "test");
     InsertCommitment("2021-01-01", caledar, "13:00", "14:00", "test");
-    InsertCommitment("2021-01-01", caledar, "13:00", "14:00", "test");
+    InsertCommitment("2021-01-01", caledar, "13:30", "14:30", "test");
 
-    PrintCommitments(caledar, "2021-01-01");
+    PrintCommitments(caledar, "2020-01-01");
 
 
 

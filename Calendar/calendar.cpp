@@ -7,9 +7,11 @@ bool IsValidDate(std::string date) { //valide o dia, mes e ano
     if (date.length() != 10) {
         return false;
     }
+
     if (date[4] != '-' || date[7] != '-') {
         return false;
     }
+
     std::string year = date.substr(0, 4);
     std::string month = date.substr(5, 2);
     std::string day = date.substr(8, 2);
@@ -17,33 +19,41 @@ bool IsValidDate(std::string date) { //valide o dia, mes e ano
     if (year.length() != 4 || month.length() != 2 || day.length() != 2) {
         return false;
     }
+
     for (int i = 0; i < 4; i++) {
         if (year[i] < '0' || year[i] > '9') {
             return false;
         }
     }
+
     for (int i = 0; i < 2; i++) {
         if (month[i] < '0' || month[i] > '9') {
             return false;
         }
     }
+
     for (int i = 0; i < 2; i++) {
         if (day[i] < '0' || day[i] > '9') {
             return false;
         }
     }
+
     int yearInt = std::stoi(year);
     int monthInt = std::stoi(month);
     int dayInt = std::stoi(day);
+
     if (yearInt < 0 || monthInt < 0 || dayInt < 0) {
         return false;
     }
+
     if (monthInt > 12) {
         return false;
     }
+
     if (dayInt > 31) {
         return false;
     }
+
     if (monthInt == 2) {
         if (dayInt > 29) {
             return false;
@@ -54,11 +64,13 @@ bool IsValidDate(std::string date) { //valide o dia, mes e ano
             }
         }
     }
+
     if (monthInt == 4 || monthInt == 6 || monthInt == 9 || monthInt == 11) {
         if (dayInt > 30) {
             return false;
         }
     }
+
     return true;
 }
 
@@ -66,33 +78,41 @@ bool IsValidTime(std::string time) {
     if (time.length() != 5) {
         return false;
     }
+
     if (time[2] != ':') {
         return false;
     }
+
     std::string hour = time.substr(0, 2);
     std::string minute = time.substr(3, 2);
 
     if (hour.length() != 2 || minute.length() != 2) {
         return false;
     }
+
     for (int i = 0; i < 2; i++) {
         if (hour[i] < '0' || hour[i] > '9') {
             return false;
         }
     }
+
     for (int i = 0; i < 2; i++) {
         if (minute[i] < '0' || minute[i] > '9') {
             return false;
         }
     }
+
     int hourInt = std::stoi(hour);
     int minuteInt = std::stoi(minute);
+
     if (hourInt < 0 || minuteInt < 0) {
         return false;
     }
+
     if (hourInt > 23 || minuteInt > 59) {
         return false;
     }
+
     return true;
 }
 
@@ -100,23 +120,29 @@ bool IsOccupiedTime(CalendarList *calendar, std::string date, std::string startT
     if (!IsValidDate(date) || !IsValidTime(startTime) || !IsValidTime(endTime)) {
         return false;
     }
+
     CalendarNode *node = GetDate(calendar, date);
     if (node == nullptr) {
         return false;
     }
+
     CommitmentNode *temp = node->commitmentList->head;
     while (temp != nullptr) {
         if (temp->startTime <= startTime && temp->endtime >= startTime) {
             return true;
         }
+
         if (temp->startTime <= endTime && temp->endtime >= endTime) {
             return true;
         }
+
         if (temp->startTime >= startTime && temp->endtime <= endTime) {
             return true;
         }
+
         temp = temp->next;
     }
+
     return false;
 }
 
@@ -124,38 +150,49 @@ bool IsOccupiedDate(CalendarList *calendar, std::string date) {
     if (!IsValidDate(date)) {
         return false;
     }
+
     CalendarNode *node = GetDate(calendar, date);
+
     if (node == nullptr) {
         return false;
     }
+
     CommitmentNode *temp = node->commitmentList->head;
+
     while (temp != nullptr) {
         return true;
         temp = temp->next;
     }
+
     return false;
 }
 
 void InsertCommitment(std::string date, CalendarList  *calendar, std::string startTime, std::string endTime, std::string description) {
     if (!IsValidDate(date) || !IsValidTime(startTime) || !IsValidTime(endTime)) {
-        std::cout << "sla";
+        std::cout << "Data ou hora invalida\n";
         return;
     }
+
     if (IsOccupiedTime(calendar, date, startTime, endTime)) {
+        std::cout << date << " " << startTime << "-" << endTime << " Horário ocupado\n";
         return;
-    }
+    } 
+
     CalendarNode *node = GetDate(calendar, date);
+
     if (node == nullptr) {
         node = new CalendarNode;
         node->date = date;
         node->commitmentList = CreateCommitmentList();
         node->next = nullptr;
         node->prev = nullptr;
+
         if (calendar->head == nullptr) {
             calendar->head = node;
             calendar->tail = node;
         } else {
             CalendarNode *temp = calendar->head;
+
             while (temp != nullptr) {
                 if (temp->date > date) {
                     if (temp->prev != nullptr) {
@@ -164,12 +201,16 @@ void InsertCommitment(std::string date, CalendarList  *calendar, std::string sta
                     } else {
                         calendar->head = node;
                     }
+
                     temp->prev = node;
                     node->next = temp;
+
                     break;
                 }
+
                 temp = temp->next;
             }
+
             if (temp == nullptr) {
                 calendar->tail->next = node;
                 node->prev = calendar->tail;
@@ -183,6 +224,7 @@ void InsertCommitment(std::string date, CalendarList  *calendar, std::string sta
     commitment->description = description;
     commitment->next = nullptr;
     commitment->prev = nullptr;
+
     if (node->commitmentList->head == nullptr) {
         node->commitmentList->head = commitment;
         node->commitmentList->tail = commitment;
@@ -202,6 +244,7 @@ void InsertCommitment(std::string date, CalendarList  *calendar, std::string sta
             }
             temp = temp->next;
         }
+        
         if (temp == nullptr) {
             node->commitmentList->tail->next = commitment;
             commitment->prev = node->commitmentList->tail;
