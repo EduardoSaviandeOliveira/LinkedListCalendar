@@ -12,6 +12,4 @@ CommitmentList *CreateCommitmentList() {
     return list;
 }
 
-
-
 #endif

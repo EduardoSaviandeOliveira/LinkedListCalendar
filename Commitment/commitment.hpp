@@ -6,7 +6,7 @@
 
 struct CommitmentNode {
     std::string startTime;
-    std::string endtime;
+    std::string endTime;
     std::string description;
     CommitmentNode* next;
     CommitmentNode* prev;
@@ -18,6 +18,5 @@ struct CommitmentList {
 };
 
 CommitmentList *CreateCommitmentList();
-
 
 #endif

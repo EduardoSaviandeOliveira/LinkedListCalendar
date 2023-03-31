@@ -16,6 +16,7 @@ struct CalendarList {
     CalendarNode *head;
     CalendarNode *tail;
 };
+
 bool IsValidDate(std::string date);
 
 bool IsValidTime(std::string time);
@@ -26,13 +27,17 @@ bool IsOccupiedDate(CalendarList *calendar, std::string date);
 
 void InsertCommitment(std::string date, CalendarList  *calendar, std::string startTime, std::string endTime, std::string description);
 
-CalendarList *CreateCaledar();
+void RemoveCommitment(std::string date, CalendarList *calendar, std::string startTime);
 
 void InsertDate(CalendarList *calendar, std::string date);
 
 void RemoveDate(CalendarList *calendar, std::string date);
 
+CalendarList *CreateCaledar();
+
 CalendarNode *GetDate(CalendarList *calendar, std::string date);
+
+void PrintCalendar(CalendarList *calendar);
 
 void PrintCommitments(CalendarList *calendar, std::string date);
 

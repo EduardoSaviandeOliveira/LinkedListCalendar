@@ -3,7 +3,7 @@
 
 #include "calendar.hpp"
 
-bool IsValidDate(std::string date) { //valide o dia, mes e ano
+bool IsValidDate(std::string date) {
     if (date.length() != 10) {
         return false;
     }
@@ -117,10 +117,6 @@ bool IsValidTime(std::string time) {
 }
 
 bool IsOccupiedTime(CalendarList *calendar, std::string date, std::string startTime, std::string endTime) {
-    if (!IsValidDate(date) || !IsValidTime(startTime) || !IsValidTime(endTime)) {
-        return false;
-    }
-
     CalendarNode *node = GetDate(calendar, date);
     if (node == nullptr) {
         return false;
@@ -128,18 +124,15 @@ bool IsOccupiedTime(CalendarList *calendar, std::string date, std::string startT
 
     CommitmentNode *temp = node->commitmentList->head;
     while (temp != nullptr) {
-        if (temp->startTime <= startTime && temp->endtime >= startTime) {
+        if (startTime >= temp->startTime && startTime < temp->endTime) {
             return true;
         }
-
-        if (temp->startTime <= endTime && temp->endtime >= endTime) {
+        if (endTime > temp->startTime && endTime <= temp->endTime) {
             return true;
         }
-
-        if (temp->startTime >= startTime && temp->endtime <= endTime) {
+        if (startTime <= temp->startTime && endTime >= temp->endTime) {
             return true;
         }
-
         temp = temp->next;
     }
 
@@ -147,80 +140,53 @@ bool IsOccupiedTime(CalendarList *calendar, std::string date, std::string startT
 }
 
 bool IsOccupiedDate(CalendarList *calendar, std::string date) {
-    if (!IsValidDate(date)) {
-        return false;
-    }
-
     CalendarNode *node = GetDate(calendar, date);
-
     if (node == nullptr) {
         return false;
     }
 
-    CommitmentNode *temp = node->commitmentList->head;
-
-    while (temp != nullptr) {
-        return true;
-        temp = temp->next;
+    if (node->commitmentList->head == nullptr) {
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 void InsertCommitment(std::string date, CalendarList  *calendar, std::string startTime, std::string endTime, std::string description) {
-    if (!IsValidDate(date) || !IsValidTime(startTime) || !IsValidTime(endTime)) {
-        std::cout << "Data ou hora invalida\n";
+    if (!IsValidDate(date)) {
+        std::cout << date << " Data inválida\n";
+        return;
+    }
+
+    if (!IsValidTime(startTime)) {
+        std::cout << "Hora de início inválida\n";
+        return;
+    }
+
+    if (!IsValidTime(endTime)) {
+        std::cout << "Hora de término inválida\n";
+        return;
+    }
+
+    if (startTime >= endTime) {
+        std::cout << "Hora de início deve ser anterior a hora de término\n";
         return;
     }
 
     if (IsOccupiedTime(calendar, date, startTime, endTime)) {
-        std::cout << date << " " << startTime << "-" << endTime << " Horário ocupado\n";
+        std::cout << "Horário ocupado\n";
         return;
-    } 
+    }
 
     CalendarNode *node = GetDate(calendar, date);
-
     if (node == nullptr) {
-        node = new CalendarNode;
-        node->date = date;
-        node->commitmentList = CreateCommitmentList();
-        node->next = nullptr;
-        node->prev = nullptr;
-
-        if (calendar->head == nullptr) {
-            calendar->head = node;
-            calendar->tail = node;
-        } else {
-            CalendarNode *temp = calendar->head;
-
-            while (temp != nullptr) {
-                if (temp->date > date) {
-                    if (temp->prev != nullptr) {
-                        temp->prev->next = node;
-                        node->prev = temp->prev;
-                    } else {
-                        calendar->head = node;
-                    }
-
-                    temp->prev = node;
-                    node->next = temp;
-
-                    break;
-                }
-
-                temp = temp->next;
-            }
-
-            if (temp == nullptr) {
-                calendar->tail->next = node;
-                node->prev = calendar->tail;
-                calendar->tail = node;
-            }
-        }
+        std::cout << "Dia não existe\n";
+        return;
     }
+
     CommitmentNode *commitment = new CommitmentNode;
     commitment->startTime = startTime;
-    commitment->endtime = endTime;
+    commitment->endTime = endTime;
     commitment->description = description;
     commitment->next = nullptr;
     commitment->prev = nullptr;
@@ -244,7 +210,7 @@ void InsertCommitment(std::string date, CalendarList  *calendar, std::string sta
             }
             temp = temp->next;
         }
-        
+    
         if (temp == nullptr) {
             node->commitmentList->tail->next = commitment;
             commitment->prev = node->commitmentList->tail;
@@ -252,26 +218,66 @@ void InsertCommitment(std::string date, CalendarList  *calendar, std::string sta
     }
 }
 
-CalendarList *CreateCaledar() {
-    CalendarList *list = new CalendarList;
+void RemoveCommitment(std::string date, CalendarList *calendar, std::string startTime) {
+    if (!IsValidDate(date)) {
+        std::cout << date << " Data inválida\n";
+        return;
+    }
 
-    list->head = nullptr;
-    list->tail = nullptr;
+    if (!IsValidTime(startTime)) {
+        std::cout << "Hora de início inválida\n";
+        return;
+    }
 
-    return list;
+    CalendarNode *node = GetDate(calendar, date);
+
+    if (node == nullptr) {
+        std::cout << "Não há compromissos marcados para " << date << "\n";
+        return;
+    }
+
+    CommitmentNode *temp = node->commitmentList->head;
+
+    while (temp != nullptr) {
+        if (temp->startTime == startTime) {
+            if (temp->prev != nullptr) {
+                temp->prev->next = temp->next;
+            } else {
+                node->commitmentList->head = temp->next;
+            }
+
+            if (temp->next != nullptr) {
+                temp->next->prev = temp->prev;
+            } else {
+                node->commitmentList->tail = temp->prev;
+            }
+
+            delete temp;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if (temp == nullptr) {
+        std::cout << "Não há compromissos marcados para " << date << " às " << startTime << "\n";
+    }
 }
 
-//insert in order
 void InsertDate(CalendarList *calendar, std::string date) {
-    if(!IsValidDate(date)) {
-        return;
-    }
-    if(!IsOccupiedDate(calendar, date)) {
+    if (!IsValidDate(date)) {
         return;
     }
 
-    CalendarNode* node = new CalendarNode;
+    if (IsOccupiedDate(calendar, date)) {
+        std::cout << "Data já existe\n";
+        return;
+    }
+
+    CalendarNode *node = new CalendarNode;
     node->date = date;
+    node->commitmentList = new CommitmentList;
+    node->commitmentList->head = nullptr;
+    node->commitmentList->tail = nullptr;
     node->next = nullptr;
     node->prev = nullptr;
 
@@ -279,7 +285,7 @@ void InsertDate(CalendarList *calendar, std::string date) {
         calendar->head = node;
         calendar->tail = node;
     } else {
-        CalendarNode* temp = calendar->head;
+        CalendarNode *temp = calendar->head;
         while (temp != nullptr) {
             if (temp->date > date) {
                 if (temp->prev != nullptr) {
@@ -294,34 +300,54 @@ void InsertDate(CalendarList *calendar, std::string date) {
             }
             temp = temp->next;
         }
+
         if (temp == nullptr) {
             calendar->tail->next = node;
             node->prev = calendar->tail;
-            calendar->tail = node;
         }
     }
 }
 
-// Remove a date in the calendar
 void RemoveDate(CalendarList *calendar, std::string date) {
-    CalendarNode* node = calendar->head;
-    while (node != nullptr) {
-        if (node->date == date) {
-            if (node->prev != nullptr) {
-                node->prev->next = node->next;
-            } else {
-                calendar->head = node->next;
-            }
-            if (node->next != nullptr) {
-                node->next->prev = node->prev;
-            } else {
-                calendar->tail = node->prev;
-            }
-            delete node;
-            break;
-        }
-        node = node->next;
+    if (!IsValidDate(date)) {
+        return;
     }
+
+    CalendarNode* node = GetDate(calendar, date);
+    if (node == nullptr) {
+        return;
+    }
+
+    if (node->prev != nullptr) {
+        node->prev->next = node->next;
+    } else {
+        calendar->head = node->next;
+    }
+
+    if (node->next != nullptr) {
+        node->next->prev = node->prev;
+    } else {
+        calendar->tail = node->prev;
+    }
+
+    CommitmentNode* temp = node->commitmentList->head;
+    while (temp != nullptr) {
+        CommitmentNode* next = temp->next;
+        delete temp;
+        temp = next;
+    }
+
+    delete node->commitmentList;
+    delete node;
+}
+
+CalendarList *CreateCaledar() {
+    CalendarList *list = new CalendarList;
+
+    list->head = nullptr;
+    list->tail = nullptr;
+
+    return list;
 }
 
 CalendarNode *GetDate(CalendarList *calendar, std::string date) {
@@ -344,18 +370,22 @@ void PrintCalendar(CalendarList *calendar) {
 }
 
 void PrintCommitments(CalendarList *calendar, std::string date) {
-// print onlu the day
     CalendarNode* node = GetDate(calendar, date);
     if (node == nullptr) {
-        std::cout << "No commitments for this day\n";
+        std::cout << "Dia não existe\n";
         return;
     }
+
+    if (node->commitmentList->head == nullptr) {
+        std::cout << "Não há compromissos marcados para " << date << "\n";
+        return;
+    }
+    
     CommitmentNode* commitment = node->commitmentList->head;
     while (commitment != nullptr) {
-        std::cout << commitment->startTime << " - " << commitment->endtime << " " << commitment->description << "\n";
+        std::cout << commitment->startTime << " - " << commitment->endTime << " " << commitment->description << "\n";
         commitment = commitment->next;
     }
 }
-
 
 #endif
